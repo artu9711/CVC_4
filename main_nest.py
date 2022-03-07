@@ -109,7 +109,7 @@ print(image_selected, "\n")
 
 
 full_time = np.around((conn_time + sim_time)/60,2)
-with open('full_time.txt', 'w') as f:
+with open('execution_time.txt', 'w') as f:
     f.write(str(full_time))
 
 
