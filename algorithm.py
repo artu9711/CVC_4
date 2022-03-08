@@ -106,7 +106,6 @@ def update_parameters(old_parameters_dict):
 create_folder(best_params_path)
 create_folder(last_params_path)
 
-print("EMPESAMO")
 
 best_parameters = read_parameters_from_txt(best_params_path + '/best_parameters.txt')
 
@@ -118,7 +117,7 @@ if last_execution_time > 20.0:
     save_parameters_to_txt(new_parameters, last_params_path + '/last_parameters.txt')
     quit()
     
-print("EXECUTION TIME")
+
 
 run_paths = glob.glob(last_params_path+'/results_*')
 if run_paths != []:
@@ -130,36 +129,30 @@ if run_paths != []:
         new_parameters = update_parameters(best_parameters)
         quit()
 
-print("SPIKES")
+
 
 path, dirs, files = next(os.walk(last_params_path)); num_runnings = len(files)
 if num_runnings < 8: 
     quit()
-print("FINAL IFS")
+
 
 df_best_params = get_df(best_params_path)
 df_last_params = get_df(last_params_path)
 
-print("FINAL DFS")
-
 best_score, best_score_spikes, best_score_gammas = get_score(df_best_params['exc_spikes_from'],df_best_params['gamma_power_exc'])
 last_score, last_score_spikes, last_score_gammas = get_score(df_last_params['exc_spikes_from'],df_last_params['gamma_power_exc'])
 
-print("FINAL SCORES")
 
 if last_score > best_score and last_score_spikes < 0 and last_score_gammas > 0.0:
     remove_contents(best_params_path)
     save_parameters_to_txt(last_parameters, best_params_path + '/best_parameters.txt')
     os.remove(last_params_path + '/last_parameters.txt')
     move_contents(last_params_path,best_params_path)
-    
-print("FINAL SI ES MEJOR")
+
     
 new_parameters = update_parameters(best_parameters)
 save_parameters_to_txt(new_parameters, last_params_path + '/last_parameters.txt')
-print("FINAL")
 
-    
     
    
 
