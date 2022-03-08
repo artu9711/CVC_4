@@ -108,6 +108,7 @@ create_folder(last_params_path)
 
 
 best_parameters = read_parameters_from_txt(best_params_path + '/best_parameters.txt')
+last_parameters = read_parameters_from_txt(last_params_path + '/last_parameters.txt')
 
 with open('execution_time.txt', 'r') as f:
     last_execution_time = float(f.read())
