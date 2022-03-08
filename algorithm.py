@@ -150,8 +150,10 @@ if last_score > best_score and last_score_spikes < 0 and last_score_gammas > 0.0
     move_contents(last_params_path,best_params_path)
 
     
-new_parameters = update_parameters(best_parameters)
-save_parameters_to_txt(new_parameters, last_params_path + '/last_parameters.txt')
+else: 
+    remove_contents(last_params_path)
+    new_parameters = update_parameters(best_parameters)
+    save_parameters_to_txt(new_parameters, last_params_path + '/last_parameters.txt')
 
     
    
