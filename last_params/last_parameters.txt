@@ -1,0 +1,7 @@
+{'weight_large_range_exc_exc': 0.0012720139350138001,
+ 'weight_large_range_exc_inh': 0.024322815283504003,
+ 'weight_inh_exc_': 0.13735538175408155,
+ 'weight_inh_inh_': 0.0869208553713805,
+ 'weight_exc_exc': 0.3454174125047116,
+ 'weight_exc_inh': 0.3727203254491649,
+ 'input_weight_poiss_inh': 0.19527077506834595}
