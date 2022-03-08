@@ -3,26 +3,22 @@ import math
 import pandas as pd
 import os
 import time
-from glob import glob
+import glob
 import shutil
 import sys
 import ast
-
+import pickle
+from scipy import stats
 
 best_params_path = 'best_params'
 last_params_path = 'last_params'
 
 ####### funciones
 
-def get_score(means_spikes,means_gammas):
-    score_spikes = scipy.stats.spearmanr(means_spikes,[2.5,3,3.5,4,4.5,5,5.5,6])
-    score_gammas = scipy.stats.spearmanr(means_gammas,[2.5,3,3.5,4,4.5,5,5.5,6])  
-    return score_gammas - score_spikes
-
 def get_df(path):
     keys = ['image_name','exc_spikes_from','inh_spikes_from', 'node_exc', 'gamma_power_exc','node_tot','gamma_power_tot', 'seed']
     output = pd.DataFrame()
-    for filename in glob.iglob(f'{path}/*'):
+    for filename in glob.iglob(f'{path}/results_*'):
         results_dict = {}
         with open(filename, 'rb') as f:
             data = pickle.load(f)
@@ -36,14 +32,29 @@ def get_df(path):
     return df
 
 def get_score(means_spikes,means_gammas):
-    score_spikes = scipy.stats.spearmanr(means_spikes,[2.5,3,3.5,4,4.5,5,5.5,6])
-    score_gammas = scipy.stats.spearmanr(means_gammas,[2.5,3,3.5,4,4.5,5,5.5,6])  
-    return score_gammas - score_spikes
+    score_spikes, pvalue_spikes = stats.spearmanr(means_spikes,[2.5,3,3.5,4,4.5,5,5.5,6])
+    score_gammas, pvalue_gammas = stats.spearmanr(means_gammas,[2.5,3,3.5,4,4.5,5,5.5,6])  
+    return score_gammas*(1-pvalue_gammas) - score_spikes*(1-pvalue_spikes), score_spikes, score_gammas
+
+def create_folder(path_name):
+    if not os.path.exists(path_name):
+        os.makedirs(path_name)
+
+def remove_contents(path_name):
+    for filename in os.listdir(path_name):
+        file_path = os.path.join(path_name, filename)
+        try:
+            if os.path.isfile(file_path) or os.path.islink(file_path):
+                os.unlink(file_path)
+            elif os.path.isdir(file_path):
+                shutil.rmtree(file_path)
+        except Exception as e:
+            continue
 
 def move_contents(origin_path_name,goal_path_name):
     for filename in os.listdir(origin_path_name):
         file_path = os.path.join(origin_path_name, filename)
-        shutil.move(file_path + ".foo",os.path.join(goal_path_name, filename) + ".foo")
+        shutil.move(file_path ,os.path.join(goal_path_name, filename))
         
 def save_parameters_to_txt(parameters_dict, filename):
     with open(filename, 'w') as f:
@@ -89,7 +100,12 @@ def update_parameters(old_parameters_dict):
     
     return new_parameters_dict
 
+
+
 ####### algoritmo
+create_folder(best_params_path)
+create_folder(last_params_path)
+
 best_parameters = read_parameters_from_txt(best_params_path + '/best_parameters.txt')
 
 with open('execution_time.txt', 'r') as f:
@@ -97,36 +113,36 @@ with open('execution_time.txt', 'r') as f:
 if last_execution_time > 20.0:
     remove_contents(last_params_path)
     new_parameters = update_parameters(best_parameters)
+    save_parameters_to_txt(new_parameters, last_params_path + '/last_parameters.txt')
     quit()
 
-last_run_file = max(last_params_path+'/*', key=os.path.getctime)
-with open(filename, 'rb') as f:
+last_run_file = max(glob(last_params_path+'/results_*') , key=os.path.getctime)
+with open(last_run_file, 'rb') as f:
      last_spikes = pickle.load(f)['exc_spikes_from']
-if last_spikes > 98735:
+if last_spikes > 98346987436735:
     remove_contents(last_params_path)
     new_parameters = update_parameters(best_parameters)
+    save_parameters_to_txt(new_parameters, last_params_path + '/last_parameters.txt')
     quit()
 
-path, dirs, files = next(os.walk(path)); len_runnings = len(files)
-if len_runnings < 8: 
+path, dirs, files = next(os.walk(last_params_path)); num_runnings = len(files)
+if num_runnings < 8: 
     quit()
-
-
 
 df_best_params = get_df(best_params_path)
 df_last_params = get_df(last_params_path)
 
-best_score = get_score(df_best_params['exc_spikes_from'],df_best_params['gamma_power_exc'])
-last_score = get_score(df_last_params['exc_spikes_from'],df_last_params['gamma_power_exc'])
+best_score, best_score_spikes, best_score_gammas = get_score(df_best_params['exc_spikes_from'],df_best_params['gamma_power_exc'])
+last_score, last_score_spikes, last_score_gammas = get_score(df_last_params['exc_spikes_from'],df_last_params['gamma_power_exc'])
 
-if last_score > best_score:
+if last_score > best_score and last_score_spikes < 0 and last_score_gammas > 0.0:
     remove_contents(best_params_path)
     save_parameters_to_txt(last_parameters, best_params_path + '/best_parameters.txt')
+    os.remove(last_params_path + '/last_parameters.txt')
     move_contents(last_params_path,best_params_path)
-
-
+    
 new_parameters = update_parameters(best_parameters)
-
+save_parameters_to_txt(new_parameters, last_params_path + '/last_parameters.txt')
 
     
     
