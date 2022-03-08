@@ -106,6 +106,8 @@ def update_parameters(old_parameters_dict):
 create_folder(best_params_path)
 create_folder(last_params_path)
 
+print("EMPESAMO")
+
 best_parameters = read_parameters_from_txt(best_params_path + '/best_parameters.txt')
 
 with open('execution_time.txt', 'r') as f:
@@ -115,6 +117,8 @@ if last_execution_time > 20.0:
     new_parameters = update_parameters(best_parameters)
     save_parameters_to_txt(new_parameters, last_params_path + '/last_parameters.txt')
     quit()
+    
+print("EXECUTION TIME")
 
 run_paths = glob.glob(last_params_path+'/results_*')
 if run_paths != []:
@@ -125,6 +129,8 @@ if run_paths != []:
         remove_contents(last_params_path)
         new_parameters = update_parameters(best_parameters)
         quit()
+
+print("SPIKES")
 
 path, dirs, files = next(os.walk(last_params_path)); num_runnings = len(files)
 if num_runnings < 8: 
