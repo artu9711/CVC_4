@@ -116,7 +116,7 @@ if last_execution_time > 20.0:
     save_parameters_to_txt(new_parameters, last_params_path + '/last_parameters.txt')
     quit()
 
-last_run_file = max(glob(last_params_path+'/results_*') , key=os.path.getctime)
+last_run_file = max(glob.glob(last_params_path+'/results_*') , key=os.path.getctime)
 with open(last_run_file, 'rb') as f:
      last_spikes = pickle.load(f)['exc_spikes_from']
 if last_spikes > 6000:
