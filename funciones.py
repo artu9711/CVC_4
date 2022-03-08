@@ -334,6 +334,8 @@ def get_frequencies(eeg,orientation_to_read,exc_or_inh, path):
     
     freqs, density = scipy.signal.periodogram(eeg[eeg_freqs_from:eeg_freqs_until],fs = 1000, scaling = 'density');
     peaks, values = find_peaks(density, height= 0.4, distance = 10); 
+    if peaks.size == 0:
+        peaks = np.array([0,0])
     idx = (- values['peak_heights']).argsort()[:num_max_frequencies]
     
     for node,peak_value in zip(peaks[idx].tolist(), values['peak_heights'][idx].tolist()):
@@ -371,6 +373,7 @@ def collect_data(image_selected, exc_eeg, inh_eeg, peaks_exc, freqs_exc, idx_exc
     now = datetime.now()
     create_folder(collect_data_folder)
     save_dict(dictionary,collect_data_folder + '/results_' + str(image_selected) +'_'+ str(now)[:-7])
+    save_dict(dictionary,collect_data_last_parameters + '/results_' + str(image_selected) +'_'+ str(now)[:-7])
                   
 def get_kurtosis(data,data_type):
     data_ = data[["x_pos","y_pos"]]
