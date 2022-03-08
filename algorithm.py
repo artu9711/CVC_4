@@ -135,7 +135,7 @@ if run_paths != []:
 
 
 path, dirs, files = next(os.walk(last_params_path)); num_runnings = len(files)
-if num_runnings < 8: 
+if num_runnings < 9: 
     print("Solo " + str(num_runnings) + " runnings")
     quit()
 
