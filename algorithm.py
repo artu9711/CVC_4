@@ -113,6 +113,7 @@ last_parameters = read_parameters_from_txt(last_params_path + '/last_parameters.
 with open('execution_time.txt', 'r') as f:
     last_execution_time = float(f.read())
 if last_execution_time > 20.0:
+    print("Saturated! (Time)")
     remove_contents(last_params_path)
     new_parameters = update_parameters(best_parameters)
     save_parameters_to_txt(new_parameters, last_params_path + '/last_parameters.txt')
@@ -126,6 +127,7 @@ if run_paths != []:
     with open(last_run_file, 'rb') as f:
          last_spikes = pickle.load(f)['exc_spikes_from']
     if last_spikes > 10000:
+        print("Saturated! (Spikes)")
         remove_contents(last_params_path)
         new_parameters = update_parameters(best_parameters)
         quit()
@@ -134,6 +136,7 @@ if run_paths != []:
 
 path, dirs, files = next(os.walk(last_params_path)); num_runnings = len(files)
 if num_runnings < 8: 
+    print("Solo " + num_runnings + " runnings")
     quit()
 
 
