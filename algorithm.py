@@ -145,7 +145,7 @@ last_score, last_score_spikes, last_score_gammas = get_score(df_last_params['exc
 
 if last_score > best_score and last_score_spikes < 0 and last_score_gammas > 0.0:
     remove_contents(best_params_path)
-    save_parameters_to_txt(last_parameters, best_params_path + '/best_parameters.txt')
+    save_parameters_to_txt(last_params_path, best_params_path + '/best_parameters.txt')
     os.remove(last_params_path + '/last_parameters.txt')
     move_contents(last_params_path,best_params_path)
 
