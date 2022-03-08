@@ -110,7 +110,7 @@ create_folder(last_params_path)
 best_parameters = read_parameters_from_txt(best_params_path + '/best_parameters.txt')
 
 with open('execution_time.txt', 'r') as f:
-    last_execution_time = int(f.read())
+    last_execution_time = float(f.read())
 if last_execution_time > 20.0:
     remove_contents(last_params_path)
     new_parameters = update_parameters(best_parameters)
